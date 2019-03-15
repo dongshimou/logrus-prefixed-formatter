@@ -7,6 +7,7 @@ import (
 	"os"
 	"regexp"
 	"sort"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -30,6 +31,7 @@ var (
 		DebugLevelStyle: "blue",
 		PrefixStyle:     "cyan",
 		TimestampStyle:  "black+h",
+		FuncStyle:       "yellow",
 	}
 	noColorsColorScheme *compiledColorScheme = &compiledColorScheme{
 		InfoLevelColor:  ansi.ColorFunc(""),
@@ -40,6 +42,7 @@ var (
 		DebugLevelColor: ansi.ColorFunc(""),
 		PrefixColor:     ansi.ColorFunc(""),
 		TimestampColor:  ansi.ColorFunc(""),
+		FuncColor:       ansi.ColorFunc(""),
 	}
 	defaultCompiledColorScheme *compiledColorScheme = compileColorScheme(defaultColorScheme)
 )
@@ -57,6 +60,7 @@ type ColorScheme struct {
 	DebugLevelStyle string
 	PrefixStyle     string
 	TimestampStyle  string
+	FuncStyle       string
 }
 
 type compiledColorScheme struct {
@@ -68,6 +72,7 @@ type compiledColorScheme struct {
 	DebugLevelColor func(string) string
 	PrefixColor     func(string) string
 	TimestampColor  func(string) string
+	FuncColor       func(string) string
 }
 
 type TextFormatter struct {
@@ -144,6 +149,7 @@ func compileColorScheme(s *ColorScheme) *compiledColorScheme {
 		DebugLevelColor: getCompiledColor(s.DebugLevelStyle, defaultColorScheme.DebugLevelStyle),
 		PrefixColor:     getCompiledColor(s.PrefixStyle, defaultColorScheme.PrefixStyle),
 		TimestampColor:  getCompiledColor(s.TimestampStyle, defaultColorScheme.TimestampStyle),
+		FuncColor:getCompiledColor(s.FuncStyle,defaultColorScheme.FuncStyle),
 	}
 }
 
@@ -254,7 +260,7 @@ func (f *TextFormatter) printColored(b *bytes.Buffer, entry *logrus.Entry, keys 
 		levelText = strings.ToUpper(levelText)
 	}
 
-	level := levelColor(fmt.Sprintf("%5s", levelText))
+	level := levelColor(fmt.Sprintf("%-5s", levelText))
 	prefix := ""
 	message := entry.Message
 
@@ -276,12 +282,21 @@ func (f *TextFormatter) printColored(b *bytes.Buffer, entry *logrus.Entry, keys 
 	caller := ""
 	if entry.HasCaller() {
 		funcVal := fmt.Sprintf("%s()", entry.Caller.Function)
-		fileVal := fmt.Sprintf("%s:%d", entry.Caller.File, entry.Caller.Line)
+		file:=entry.Caller.File
+		line:=entry.Caller.Line
+
+		cwd,err:=os.Getwd()
+		if err==nil{
+			//trim some prefix
+			file=strings.TrimPrefix(file,cwd)
+			file=strings.TrimPrefix(file,string(os.PathSeparator))
+		}
+		fileVal:=file+":"+strconv.Itoa(line)
 
 		if f.CallerPrettyfier != nil {
 			funcVal, fileVal = f.CallerPrettyfier(entry.Caller)
 		}
-		caller = fileVal + " " + funcVal
+		caller = fileVal + " " + colorScheme.FuncColor(funcVal)
 	}
 
 	if f.DisableTimestamp {

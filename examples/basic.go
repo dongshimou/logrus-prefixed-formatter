@@ -2,15 +2,22 @@ package main
 
 import (
 	"github.com/sirupsen/logrus"
-	prefixed "github.com/x-cray/logrus-prefixed-formatter"
+	prefixed "github.com/dongshimou/logrus-prefixed-formatter"
 )
 
 var log = logrus.New()
 
 func init() {
 	formatter := new(prefixed.TextFormatter)
+	//formatter.CallerPrettyfier= func(frame *runtime.Frame) (function string, file string) {
+	//	return frame.Function,fmt.Sprintf("%s:%d",frame.File,frame.Line)
+	//}
+	formatter.FullTimestamp=true
+	formatter.TimestampFormat="15:04:05"
 	log.Formatter = formatter
 	log.Level = logrus.DebugLevel
+	log.SetReportCaller(true)
+
 }
 
 func main() {
@@ -24,6 +31,7 @@ func main() {
 			}).Fatal("[main] The ice breaks!")
 		}
 	}()
+
 
 	// You could either provide a map key called `prefix` to add prefix
 	log.WithFields(logrus.Fields{
