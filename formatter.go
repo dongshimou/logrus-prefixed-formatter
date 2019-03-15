@@ -284,6 +284,20 @@ func (f *TextFormatter) printColored(b *bytes.Buffer, entry *logrus.Entry, keys 
 		}
 		fmt.Fprintf(b, "%s %s%s "+messageFormat, colorScheme.TimestampColor(timestamp), level, prefix, message)
 	}
+
+	caller:=""
+	if entry.HasCaller() {
+		funcVal := fmt.Sprintf("%s()", entry.Caller.Function)
+		fileVal := fmt.Sprintf("%s:%d", entry.Caller.File, entry.Caller.Line)
+
+		if f.CallerPrettyfier != nil {
+			funcVal, fileVal = f.CallerPrettyfier(entry.Caller)
+		}
+		caller = fileVal + " " + funcVal
+	}
+
+	fmt.Fprintf(b," %s ",caller)
+
 	for _, k := range keys {
 		if k != "prefix" {
 			v := entry.Data[k]
