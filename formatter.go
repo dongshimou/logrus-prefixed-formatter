@@ -10,6 +10,7 @@ import (
 	"strings"
 	"sync"
 	"time"
+	"runtime"
 
 	"github.com/sirupsen/logrus"
 	"github.com/mgutz/ansi"
