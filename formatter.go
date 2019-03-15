@@ -100,6 +100,10 @@ type TextFormatter struct {
 
 	// Wrap empty fields in quotes if true.
 	QuoteEmptyFields bool
+	
+	
+	CallerPrettyfier func(*runtime.Frame) (function string, file string)
+
 
 	// Can be set to the override the default quoting character "
 	// with something else. For example: ', or `.
