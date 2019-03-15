@@ -273,19 +273,7 @@ func (f *TextFormatter) printColored(b *bytes.Buffer, entry *logrus.Entry, keys 
 		messageFormat = fmt.Sprintf("%%-%ds", f.SpacePadding)
 	}
 
-	if f.DisableTimestamp {
-		fmt.Fprintf(b, "%s%s "+messageFormat, level, prefix, message)
-	} else {
-		var timestamp string
-		if !f.FullTimestamp {
-			timestamp = fmt.Sprintf("[%04d]", miniTS())
-		} else {
-			timestamp = fmt.Sprintf("[%s]", entry.Time.Format(timestampFormat))
-		}
-		fmt.Fprintf(b, "%s %s%s "+messageFormat, colorScheme.TimestampColor(timestamp), level, prefix, message)
-	}
-
-	caller:=""
+	caller := ""
 	if entry.HasCaller() {
 		funcVal := fmt.Sprintf("%s()", entry.Caller.Function)
 		fileVal := fmt.Sprintf("%s:%d", entry.Caller.File, entry.Caller.Line)
@@ -296,7 +284,17 @@ func (f *TextFormatter) printColored(b *bytes.Buffer, entry *logrus.Entry, keys 
 		caller = fileVal + " " + funcVal
 	}
 
-	fmt.Fprintf(b," %s ",caller)
+	if f.DisableTimestamp {
+		fmt.Fprintf(b, "%s%s %s "+messageFormat, level, prefix, caller, message)
+	} else {
+		var timestamp string
+		if !f.FullTimestamp {
+			timestamp = fmt.Sprintf("[%04d]", miniTS())
+		} else {
+			timestamp = fmt.Sprintf("[%s]", entry.Time.Format(timestampFormat))
+		}
+		fmt.Fprintf(b, "%s %s%s %s "+messageFormat, colorScheme.TimestampColor(timestamp), level, prefix, caller, message)
+	}
 
 	for _, k := range keys {
 		if k != "prefix" {
