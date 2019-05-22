@@ -23,6 +23,7 @@ func Info(args ...interface{}){
 	l:=log
 	l.CallerSkip=1
 	l.Info(args...)
+	l.CallerSkip=0
 }
 func main() {
 	defer func() {
