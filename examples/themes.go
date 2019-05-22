@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/sirupsen/logrus"
+	"github.com/dongshimou/logrus"
 	prefixed "github.com/dongshimou/logrus-prefixed-formatter"
 )
 

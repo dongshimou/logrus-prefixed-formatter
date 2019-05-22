@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/sirupsen/logrus"
+	"github.com/dongshimou/logrus"
 	prefixed "github.com/dongshimou/logrus-prefixed-formatter"
 )
 
@@ -19,7 +19,11 @@ func init() {
 	log.SetReportCaller(true)
 
 }
-
+func Info(args ...interface{}){
+	l:=log
+	l.CallerSkip=1
+	l.Info(args...)
+}
 func main() {
 	defer func() {
 		err := recover()
@@ -32,6 +36,7 @@ func main() {
 		}
 	}()
 
+	Info("test skip")
 
 	// You could either provide a map key called `prefix` to add prefix
 	log.WithFields(logrus.Fields{

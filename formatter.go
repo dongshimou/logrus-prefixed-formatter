@@ -13,7 +13,7 @@ import (
 	"time"
 	"runtime"
 
-	"github.com/sirupsen/logrus"
+	"github.com/dongshimou/logrus"
 	"github.com/mgutz/ansi"
 	"golang.org/x/crypto/ssh/terminal"
 )
