@@ -1,11 +1,7 @@
 package prefixed_test
 
 import (
-	. "github.com/x-cray/logrus-prefixed-formatter"
-
-	"github.com/dongshimou/logrus"
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
+	"github.com/sirupsen/logrus"
 )
 
 var _ = Describe("Formatter", func() {

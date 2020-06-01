@@ -13,7 +13,7 @@ import (
 	"time"
 	"runtime"
 
-	"github.com/dongshimou/logrus"
+	"github.com/sirupsen/logrus"
 	"github.com/mgutz/ansi"
 	"golang.org/x/crypto/ssh/terminal"
 )
@@ -24,7 +24,7 @@ var (
 	baseTimestamp      time.Time    = time.Now()
 	defaultColorScheme *ColorScheme = &ColorScheme{
 		InfoLevelStyle:  "green",
-		WarnLevelStyle:  "yellow",
+		WarnLevelStyle:  "yellow+h",
 		ErrorLevelStyle: "red",
 		FatalLevelStyle: "red",
 		PanicLevelStyle: "red",
