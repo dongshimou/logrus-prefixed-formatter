@@ -1,4 +1,4 @@
-module logrus-prefixed-formatter
+module github.com/dongshimou/logrus-prefixed-formatter
 
 go 1.14
 
