@@ -35,14 +35,21 @@ package main
 
 import (
 	"github.com/sirupsen/logrus"
-	prefixed "github.com/x-cray/logrus-prefixed-formatter"
+	// prefixed "github.com/x-cray/logrus-prefixed-formatter"
+    // fork from x-cray
+    // if you want use my version. use this import
+    prefixed "github.com/dongshimou/logrus-prefixed-formatter"
 )
 
 var log = logrus.New()
 
 func init() {
-	log.Formatter = new(prefixed.TextFormatter)
+    formatter := new(prefixed.TextFormatter)
+	formatter.FullTimestamp=true
+	formatter.TimestampFormat="15:04:05"
+	log.Formatter = formatter
 	log.Level = logrus.DebugLevel
+	log.SetReportCaller(true)
 }
 
 func main() {
