@@ -106,7 +106,9 @@ type TextFormatter struct {
 
 	// Wrap empty fields in quotes if true.
 	QuoteEmptyFields bool
-	
+
+
+	PrefixString string
 	
 	CallerPrettyfier func(*runtime.Frame) (function string, file string)
 
@@ -264,13 +266,18 @@ func (f *TextFormatter) printColored(b *bytes.Buffer, entry *logrus.Entry, keys 
 	prefix := ""
 	message := entry.Message
 
+	// 使用log.entry的prefix字段
 	if prefixValue, ok := entry.Data["prefix"]; ok {
 		prefix = colorScheme.PrefixColor(" " + prefixValue.(string) + ":")
 	} else {
+		// 提取 "[main] abcdef" 中的main到prefix
 		prefixValue, trimmedMsg := extractPrefix(entry.Message)
 		if len(prefixValue) > 0 {
 			prefix = colorScheme.PrefixColor(" " + prefixValue + ":")
 			message = trimmedMsg
+		}else{
+			// 使用formatter默认的prefix
+			prefix = colorScheme.PrefixColor(" " + f.PrefixString + ":")
 		}
 	}
 

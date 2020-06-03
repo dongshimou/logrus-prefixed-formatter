@@ -13,6 +13,7 @@ func init() {
 	//	return frame.Function,fmt.Sprintf("%s:%d",frame.File,frame.Line)
 	//}
 	formatter.FullTimestamp=true
+	formatter.PrefixString="basic"
 	formatter.TimestampFormat="15:04:05"
 	log.Formatter = formatter
 	log.Level = logrus.DebugLevel
@@ -49,6 +50,11 @@ func main() {
 		"omg":    true,
 		"number": 122,
 	}).Warn("[main] The group's number increased tremendously!")
+
+	log.WithFields(logrus.Fields{
+		"omg":    true,
+		"number": 122,
+	}).Warn("The group's number increased tremendously!")
 
 	// Information message
 	log.WithFields(logrus.Fields{
